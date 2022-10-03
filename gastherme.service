@@ -1,0 +1,14 @@
+[Unit]
+Description=Gastherme Can to MQTT
+After=syslog.target network.target
+ 
+[Service]
+ExecStartPre=/sbin/ip link set can0 up type can bitrate 10000 listen-only on
+ExecStart=/usr/local/bin/gastherme
+ExecStopPost=/sbin/ip link set can0 down
+ExecReload=
+StandardOutput=syslog
+Restart=always
+ 
+[Install]
+WantedBy=multi-user.target
