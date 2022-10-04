@@ -1,7 +1,8 @@
-Interface for Junkers/Bosch Gastherme with Heatronic 2.
-The BM1 CAN module is required with a TA250/TA270 controller.
-All data from the CAN bus is published to a local MQTT broker.
+Interface for Junkers/Bosch Gastherme with Heatronic 2. 
+The BM1 CAN module is required with a TA250/TA270 controller. 
+All data from the CAN bus is published to a local MQTT broker. 
 
+See also:
 https://wiki.volkszaehler.org/hardware/channels/heating_control/gastherme_junkers_can_bus
 
 /boot/config.txt :
