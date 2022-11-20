@@ -14,8 +14,6 @@ ifconfig can0
 candump can0
 
 
-gcc gastherme.c -o gastherme -lmosquitto
-
 
 Thanks to
 https://github.com/craigpeacock/CAN-Examples

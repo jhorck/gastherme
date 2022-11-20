@@ -19,106 +19,113 @@
 
 void parse(struct can_frame *frame, struct mosquitto *mosq) {
 	int i, len, max_len=20, res=MOSQ_ERR_SUCCESS;
+	int16_t data;
 	char buf[max_len];
 	switch(frame->can_id) {
 		case 0x200:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("max Vorlauftemperatur    : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("max Vorlauftemperatur       : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/vorlauftemperatur/max", len, buf, 0, false);
 			break;
 		case 0x201:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("ist Vorlauftemperatur    : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("ist Vorlauftemperatur       : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/vorlauftemperatur/ist", len, buf, 0, false);
 			break;
 		case 0x202:
-//			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-//			//printf("max Warmwassertemperatur : %s\r\n", buf);
+//			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+//			//printf("max Warmwassertemperatur    : %s\r\n", buf);
 //			res = mosquitto_publish(mosq, NULL, "therme/warmwassertemperatur/max", len, buf, 0, false);
 			break;
 		case 0x203:
-//			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-//			//printf("ist Warmwassertemperatur : %s\r\n", buf);
+//			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+//			//printf("ist Warmwassertemperatur    : %s\r\n", buf);
 //			res = mosquitto_publish(mosq, NULL, "therme/warmwassertemperatur/ist", len, buf, 0, false);
 			break;
 		case 0x204:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("max Speichertemperatur   : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("max Speichertemperatur      : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/speichertemperatur/max", len, buf, 0, false);
 			break;
 		case 0x205:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("ist Speichertemperatur   : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("ist Speichertemperatur      : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/speichertemperatur/ist", len, buf, 0, false);
 			break;
 		case 0x206:
 			len = snprintf(buf, max_len, "%02X", frame->data[0]);
-			//printf("Störungsmeldung           : %s\r\n", buf);
+			//printf("Störungsmeldung             : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/störungsmeldung", len, buf, 0, false);
 			break;
 		case 0x207:
-			len = snprintf(buf, max_len, "%.1f", (float)((frame->data[0] << 8) + frame->data[1]) / 100);
-			//printf("Außentemperatur           : %s\r\n", buf);
+			data = (int16_t)((frame->data[0] << 8) | frame->data[1]);
+			len = snprintf(buf, max_len, "%.1f", (float)data / 100.0);
+			//printf("Außentemperatur             : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/außentemperatur", len, buf, 0, false);
 			break;
 		case 0x209:
 			len = snprintf(buf, max_len, "%d", frame->data[0]);
-			//printf("Flamme                    : %s\r\n", buf);
+			//printf("Flamme                      : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/flamme", len, buf, 0, false);
 			break;
 		case 0x20a:
 			len = snprintf(buf, max_len, "%d", frame->data[0]);
-			//printf("Heizungspumpe             : %s\r\n", buf);
+			//printf("Heizungspumpe               : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/pumpe", len, buf, 0, false);
 			break;
 		case 0x20b:
 			len = snprintf(buf, max_len, "%d", frame->data[0]);
-			//printf("Speicherladung            : %s\r\n", buf);
+			//printf("Speicherladung              : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/speicherladung", len, buf, 0, false);
 			break;
 		case 0x20c:
 			len = snprintf(buf, max_len, "%d", frame->data[0]);
-			//printf("Winterbetrieb             : %s\r\n", buf);
+			//printf("Winterbetrieb               : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "therme/winterbetrieb", len, buf, 0, false);
 			break;
 		case 0x20d:
 //			len = snprintf(buf, max_len, "%d", frame->data[0]);
-//			//printf("max Heizgeräteleistung   : %s\r\n", buf);
+//			//printf("max Heizgeräteleistung      : %s\r\n", buf);
 //			res = mosquitto_publish(mosq, NULL, "therme/heizgeräteleistung", len, buf, 0, false);
 			break;
 
 		case 0x250:
 			len = snprintf(buf, max_len, "%d", frame->data[0]);
-			//printf("Heizbetrieb        : %s\r\n", buf);
+			//printf("Heizbetrieb                 : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "regler/heizbetrieb", len, buf, 0, false);
 			break;
 		case 0x251:
 //			len = snprintf(buf, max_len, "%d", frame->data[0]);
-//			//printf("Heizleistung       : %s\r\n", buf);
+//			//printf("Heizleistung                : %s\r\n", buf);
 //			res = mosquitto_publish(mosq, NULL, "regler/heizleistung", len, buf, 0, false);
 			break;
 		case 0x252:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("soll Vorlauftemperatur  : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("soll Vorlauftemperatur      : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "regler/vorlauftemperatur/soll", len, buf, 0, false);
 			break;
 		case 0x253:
-//			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-//			//printf("soll Speichertemperatur : %s\r\n", buf);
-//			res = mosquitto_publish(mosq, NULL, "regler/speichertemperatur/soll", len, buf, 0, false);
+//			len = snprintf(buf, max_len, "%d", frame->data[0]);
+//			//printf("Sparbetrieb                 : %s\r\n", buf);
+//			res = mosquitto_publish(mosq, NULL, "regler/sparbetrieb", len, buf, 0, false);
 			break;
 		case 0x254:
 //			len = snprintf(buf, max_len, "%d", frame->data[0]);
-//			//printf("sollw. WW-Sofort          : %s\r\n", buf);
+//			//printf("sollw. WW-Sofort            : %s\r\n", buf);
 //			res = mosquitto_publish(mosq, NULL, "regler/warmwasser-sofort", len, buf, 0, false);
 			break;
 		case 0x255:
-			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2);
-			//printf("sollw. WW-Temperatur      : %s\r\n", buf);
+			len = snprintf(buf, max_len, "%.1f", (float)frame->data[0] / 2.0);
+			//printf("sollw. WW-Temperatur        : %s\r\n", buf);
 			res = mosquitto_publish(mosq, NULL, "regler/speichertemperatur/soll", len, buf, 0, false);
 			break;
 		case 0x256:
-			//printf("Uhrzeit                   : %d:%d Tag %d (%d)\r\n", frame->data[1], frame->data[2], frame->data[0], frame->data[3]);
+			//printf("Uhrzeit                     : %d:%d Tag %d (%d)\r\n", frame->data[1], frame->data[2], frame->data[0], frame->data[3]);
+			break;
+		case 0x258:
+//			len = snprintf(buf, max_len, "%d", frame->data[0]);
+//			//printf("Witterungsgeführte regelung : %s\r\n", buf);
+//			res = mosquitto_publish(mosq, NULL, "regler/witterungsgeführteregelung", len, buf, 0, false);
 			break;
 
 		default:
@@ -186,14 +193,6 @@ int main(int argc, char **argv)
 		}
 
 		parse(&frame, mosq);
-/*
-		printf("0x%03X [%d] ",frame.can_id, frame.can_dlc);
-
-		for (i = 0; i < frame.can_dlc; i++)
-			printf("%02X ",frame.data[i]);
-
-		printf("\r\n");
-*/
 		usleep(100000);
 	}
 
